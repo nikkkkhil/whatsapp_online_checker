@@ -1,3 +1,4 @@
+#!/usr/bin/python3.6
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -5,8 +6,12 @@ import pygame
 import os
 from datetime import datetime
 import requests
+import gi
+gi.require_version("Notify","0.7")
+from gi.repository  import Notify
 class WhatsappOnline:
     status = None
+    Notify.init("App Name")
     search_bar_selector = '#side > div._2HS9r > div > label > input'
     message_input_selector = """#main > footer > div._2i7Ej.copyable-area > \
         div._13mgZ > div > div._3u328.copyable-text.selectable-text"""
@@ -21,6 +26,8 @@ class WhatsappOnline:
         send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
         response = requests.get(send_text)
         return response.json()
+    def get_time(self):
+         return (datetime.now().strftime("%H:%M:%S:%D"))
 
     def online_check(self,name):
         search_bar = self.browser.find_element_by_css_selector(
@@ -35,18 +42,21 @@ class WhatsappOnline:
             _status = self.browser.find_element_by_css_selector('#main > header')
             status = _status.text
 
+            notification = Notify.Notification.new(name+" is online",self.get_time(),"emblem-OK",)
+            notification.set_urgency(0)
             if status.find('online') != -1:
                 count +=1
                 self.status = 'online'
                 if count ==1:
-                    get_time = datetime.now().strftime("%H:%M:%S:%D")
-                    msg = name + " is online at time "+ get_time
+                    msg = name + " is online at time "+ self.get_time()
                     self.telegram_bot(<telegramAPI>,<telegramchannelID>,msg)
-                    print(get_time)
+                    print(self.get_time())
+                    notification.show()
                     pygame.mixer.music.play()
             else:
                 self.status = None
                 count = 0
+                notification.close()
 
             if status:
                 print("{} is {}".format(
