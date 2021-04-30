@@ -12,5 +12,5 @@ pygame==1.9.6
 Pygments==2.4.2
 requests==2.22.0
 selenium==3.141.0
-urllib3==1.25.6
+urllib3==1.25.8
 Werkzeug==0.15.6
