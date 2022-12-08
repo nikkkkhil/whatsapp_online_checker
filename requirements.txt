@@ -1,5 +1,5 @@
 asttokens==1.1.13
-certifi==2019.9.11
+certifi==2022.12.7
 chardet==3.0.4
 executing==0.3.0
 Flask==1.1.1
